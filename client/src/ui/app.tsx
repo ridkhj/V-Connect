@@ -1,3 +1,5 @@
+import DropzoneComponent from "./components/dropzone"
+
 export default function App() {
   return (
     <>
@@ -5,11 +7,13 @@ export default function App() {
         style={{ 
           width: "100vw", 
           flex: 1, 
-          display: "flex", 
+          display: "flex",
+          flexDirection: "column",
+          gap: "2rem", 
           justifyContent: "center", 
           alignItems: "center" 
        }}>
-        MAMA EU CABECINHA
+        <DropzoneComponent />
       </p>
     </>
   )
