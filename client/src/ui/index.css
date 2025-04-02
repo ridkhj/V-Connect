@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 body {
+  font-family: 'Inter', sans-serif;
   margin: 0;
   display: flex;
   place-items: center;
