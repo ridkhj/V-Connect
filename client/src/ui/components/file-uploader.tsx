@@ -13,7 +13,11 @@ interface UploadedFile {
   uploadedAt: Date;
 }
 
-const FileUploader = () => {
+interface FileUploaderProps {
+  onUpload: (file: File) => void;
+}
+
+const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [selectedTab, setSelectedTab] = useState<'upload' | 'recent'>('upload');
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -24,6 +28,7 @@ const FileUploader = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       uploadFiles(e.target.files);
+      onUpload(e.target.files[0]);
     }
   };
 
@@ -141,6 +146,7 @@ const FileUploader = () => {
           Recentes
         </button>
         <input
+          id='file-input'
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
