@@ -10,7 +10,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src/ui"),
     },
   },
-
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/ui/setup-tests.ts',
+  },
   base: './',
   build: {
     outDir: "dist-react"
