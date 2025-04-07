@@ -10,4 +10,4 @@ participantesPatos = extratorDeDados.extrairDadosAtualizacao('server/scripts/ass
 atualizacoes = extratorDeDados.extrairDadosCDPR('server/scripts/assets/sheets/cdpr.xlsx')
 
 criar_pdf_cdpr("cdprPatos.pdf", atualizacoes, 'server/scripts/')
-criar_pdf_atualizacoes("atualizacoesPatos.pdf", participantesPatos, 'server/scripts/')
+criar_pdf_atualizacoes("atualizacoesPatos.pdf", participantesPatos, 'server/scripts/')  
