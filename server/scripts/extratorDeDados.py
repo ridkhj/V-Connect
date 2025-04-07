@@ -1,51 +1,93 @@
 import openpyxl
-from components.participante import Participante
+import os
+from components.cdpr import Cdpr
 from components.atualizacao import Atualizacao
 
-def extrairDadosAtualizacao(path):
-    arquivo = openpyxl.load_workbook(path)
-    planilha = arquivo.active
-    participantesPatos = []
 
-    row = 2        # coordenadas da primeira celula a ser lida 
-    column = 2
-    acessar = planilha.cell
 
-    while (acessar(row, column).value is not None and acessar(row, column+1).value is not None):
+class ExtratorDeDados:
 
-        codigo = acessar(row, column).value
-        nome = acessar(row, column+1).value
-        status = acessar(row, column+3).value
-
+    def __init__(self, path):
+        self._path = path
+        self._atualizacoes: list[Atualizacao] = []
+        self._cdprs: list[Cdpr] = []
         
-        participanteAuxiliar = Participante(codigo, nome, status)
+    @property
+    def path(self):
+        return self._path
 
-        if status != "Enviado" and status != "Devolvido à Igreja Parceira":
-    
-            participantesPatos.append(participanteAuxiliar)
+    @path.setter
+    def path(self, value):
+        self._path = value
+
+    @property
+    def atualizacoes(self):
+        return self._atualizacoes
+
+    @atualizacoes.setter
+    def atualizacoes(self, value: list[Atualizacao]):
+        self._atualizacoes = value
+
+    @property
+    def cdprs(self):
+        return self._cdprs
+
+    @cdprs.setter
+    def cdprs(self, value: list[Cdpr]):
+        self._cdprs = value
+
+    def listarArquivos(self):
+        arquivos = os.listdir(self.path)
+        arquivos_xlsx = [arquivo for arquivo in arquivos if arquivo.endswith('.xlsx')]
+        for arquivo in arquivos_xlsx:
+            if arquivo.startswith('atualizacoes'):
+                self.extrairDadosAtualizacao(os.path.join(self.path, arquivo))
+            elif arquivo.startswith('cdpr'): 
+                self.extrairDadosCDPR(os.path.join(self.path, arquivo))   
+                
+    def extrairDadosAtualizacao(self, path):
+        arquivo = openpyxl.load_workbook(path)
+        planilha = arquivo.active
+        atualizacoes = []
+
+        row = 2        # coordenadas da primeira celula a ser lida 
+        column = 2
+        acessar = planilha.cell
+
+        while (acessar(row, column).value is not None and acessar(row, column+1).value is not None):
+
+            codigo = acessar(row, column).value
+            nome = acessar(row, column+1).value
+            status = acessar(row, column+3).value
+
             
-        row += 1
+            atualizacaoAux = Atualizacao(codigo, nome, status)
 
-    return participantesPatos
-
-def extrairDadosCDPR(path):
-    arquivo = openpyxl.load_workbook(path)
-    planilha = arquivo.active
-    atualizacoes = []
-
-    row = 2        # coordenadas da primeira celula a ser lida 
-    column = 2
-    acessar = planilha.cell
-
-    while (acessar(row, column).value is not None and acessar(row, column+1).value is not None):
-
-        codigo = acessar(row, column).value
-        nome = acessar(row, column+1).value
-        age = acessar(row, column+3).value
-
+            if status != "Enviado" and status != "Devolvido à Igreja Parceira":
         
-        atualizacoes.append(Atualizacao(codigo, nome, age))
- 
-        row += 1
+                atualizacoes.append(atualizacaoAux)
+                
+            row += 1
 
-    return atualizacoes
+        self.atualizacoes = atualizacoes
+
+    def extrairDadosCDPR(self, path):
+        arquivo = openpyxl.load_workbook(path)
+        planilha = arquivo.active
+        cdprs = []
+
+        row = 2        # coordenadas da primeira celula a ser lida 
+        column = 2
+        acessar = planilha.cell
+
+        while (acessar(row, column).value is not None and acessar(row, column+1).value is not None):
+
+            codigo = acessar(row, column).value
+            nome = acessar(row, column+1).value
+            age = acessar(row, column+3).value
+
+            cdprs.append(Cdpr(codigo, nome, age))
+    
+            row += 1
+
+        self.cdprs = cdprs

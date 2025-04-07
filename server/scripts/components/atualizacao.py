@@ -1,10 +1,8 @@
-
 class Atualizacao:
-    def __init__(self, code, name, age):
+    def __init__(self, code, name, status):
         self._code = code
         self._name = name
-        self._age = age
-        
+        self._status = status
         # self._overdue = overdue
 
     @property
@@ -24,12 +22,12 @@ class Atualizacao:
         self._name = value
 
     @property
-    def age(self):
-        return self._age
+    def status(self):
+        return self._status
 
-    @age.setter
-    def age(self, value):
-        self._age = value
+    @status.setter
+    def status(self, value):
+        self._status = value
 
     def strRelatorio(self):
         return f"{self._code} - {self._name}"
