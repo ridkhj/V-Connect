@@ -1,8 +1,8 @@
 import openpyxl
-from participante import Participante
+from components.participante import Participante
+from components.atualizacao import Atualizacao
 
-
-def extrairDados(path):
+def extrairDadosAtualizacao(path):
     arquivo = openpyxl.load_workbook(path)
     planilha = arquivo.active
     participantesPatos = []
@@ -11,13 +11,12 @@ def extrairDados(path):
     column = 2
     acessar = planilha.cell
 
-    while (acessar(row, column).value != None):
+    while (acessar(row, column).value is not None and acessar(row, column+1).value is not None):
 
         codigo = acessar(row, column).value
         nome = acessar(row, column+1).value
         status = acessar(row, column+3).value
 
-        print(status)
         
         participanteAuxiliar = Participante(codigo, nome, status)
 
@@ -28,3 +27,25 @@ def extrairDados(path):
         row += 1
 
     return participantesPatos
+
+def extrairDadosCDPR(path):
+    arquivo = openpyxl.load_workbook(path)
+    planilha = arquivo.active
+    atualizacoes = []
+
+    row = 2        # coordenadas da primeira celula a ser lida 
+    column = 2
+    acessar = planilha.cell
+
+    while (acessar(row, column).value is not None and acessar(row, column+1).value is not None):
+
+        codigo = acessar(row, column).value
+        nome = acessar(row, column+1).value
+        age = acessar(row, column+3).value
+
+        
+        atualizacoes.append(Atualizacao(codigo, nome, age))
+ 
+        row += 1
+
+    return atualizacoes
