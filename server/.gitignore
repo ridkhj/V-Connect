@@ -1,0 +1,10 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Test cache
+.pytest_cache/
+
+# VSCode
+.vscode/
