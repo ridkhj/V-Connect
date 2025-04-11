@@ -1,5 +1,5 @@
-import Cards from "./pages/cards";
+import Updates from "./pages/updates";
 
 export default function App() {
-  return <Cards />;
+  return <Updates />;
 }
