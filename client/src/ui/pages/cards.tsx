@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react"
-import Sidebar from "@//components/sidebar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@//components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@//components/ui/select" 
+import Sidebar from "@/components/sidebar"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select" 
 
 const peoples = [
   {

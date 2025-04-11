@@ -5,8 +5,8 @@ import {
   TableCell,
   TableHead,
   TableBody,
-} from "@//components/ui/table";
-import Sidebar from "@//components/sidebar";
+} from "@/components/ui/table";
+import Sidebar from "@/components/sidebar";
 import { ArrowLeft, Copy } from "lucide-react";
 
 const peoples = [
