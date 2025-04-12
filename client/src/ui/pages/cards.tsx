@@ -1,7 +1,21 @@
+import { Link } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import Sidebar from "@/components/sidebar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select" 
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table"
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue
+} from "@/components/ui/select" 
 
 const peoples = [
   {
@@ -26,21 +40,21 @@ export default function Cards() {
       <Sidebar />
       <div className="w-full bg-zinc-50">
         <header className="flex justify-start items-center gap-4 p-4 bg-white border-b-2 border-[#DDD]">
-          <button>
+          <Link to="/">
             <ArrowLeft size={24} />
-          </button>
+          </Link>
           <h1 className="text-xl font-bold uppercase">Relatório de Cartas</h1>
         </header>
         <div className="flex justify-end items-center gap-2 mx-12 mt-12">
-          <button className="bg-[#8270fa] text-white rounded-md py-1 px-4 flex items-center font-semibold">
+          <button className="bg-indigo-600 text-white rounded-full py-2 px-4 text-sm flex items-center font-semibold">
             <p>Imprimir Relatório</p>
           </button>
-          <button className="bg-[#8270fa] text-white rounded-md py-1 px-4 flex items-center font-semibold">
+          <button className="bg-indigo-600 text-white rounded-full py-2 px-4 text-sm flex items-center font-semibold">
             <p>Enviar Email</p>
           </button> 
         </div>
         <div className="mx-12">
-          <Table className="my-2 border-2 border-[#DDD]">
+          <Table className="my-4 border-2 border-[#DDD]">
             <TableHeader className="bg-zinc-100 border-1 border-[#DDD]">
               <TableRow>
                 <TableHead className="text-center border-r-1 border-[#DDD]">

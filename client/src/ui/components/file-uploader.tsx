@@ -14,10 +14,10 @@ interface UploadedFile {
 }
 
 interface FileUploaderProps {
-  onUpload: (file: File) => void;
+  onUpload?: (file: File) => void;
 }
 
-const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
+export default function FileUploader({ onUpload }: FileUploaderProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [selectedTab, setSelectedTab] = useState<'upload' | 'recent'>('upload');
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -28,7 +28,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       uploadFiles(e.target.files);
-      onUpload(e.target.files[0]);
+      onUpload!(e.target.files[0]);
     }
   };
 
@@ -280,5 +280,3 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
     </Card>
   );
 };
-
-export default FileUploader;
