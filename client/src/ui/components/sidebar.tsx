@@ -1,4 +1,4 @@
-import FileUploader from "./file-uploader";
+import FileUploader from "@/components/file-uploader"
 
 export default function Sidebar() {
   return (
@@ -16,5 +16,5 @@ export default function Sidebar() {
         </p>
       </div>
     </div>
-  );
+  )
 }

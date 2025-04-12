@@ -1,3 +1,6 @@
+import Sidebar from "@/components/sidebar"
+import { Link } from "react-router-dom"
+import { ArrowLeft, Copy } from "lucide-react"
 import {
   Table,
   TableHeader,
@@ -5,9 +8,7 @@ import {
   TableCell,
   TableHead,
   TableBody,
-} from "@/components/ui/table";
-import Sidebar from "@/components/sidebar";
-import { ArrowLeft, Copy } from "lucide-react";
+} from "@/components/ui/table"
 
 const peoples = [
   {
@@ -32,29 +33,29 @@ export default function Updates() {
       <Sidebar />
       <div className="w-full bg-zinc-50">
         <header className="flex justify-start items-center gap-4 p-4 bg-white border-b-2 border-[#DDD]">
-          <button>
+          <Link to="/">
             <ArrowLeft size={24} />
-          </button>
+          </Link>
           <h1 className="text-xl font-bold uppercase">
             Relatório de Atualizações
           </h1>
         </header>
         <div className="flex justify-end items-center gap-2 mx-12 mt-12">
-          <button className="bg-[#8270fa] text-white rounded-md py-1 px-4 flex items-center font-semibold">
+          <button className="bg-indigo-600 text-white rounded-full py-2 px-4 text-sm flex items-center font-semibold">
             <p>Imprimir formuários</p>
           </button>
-          <button className="bg-[#8270fa] text-white rounded-md py-1 px-4 flex items-center font-semibold">
+          <button className="bg-indigo-600 text-white rounded-full py-2 px-4 text-sm flex items-center font-semibold">
             <p>Google Forms</p>
           </button>
         </div>
         <div className="mx-12">
-          <Table className="my-2 border-2 border-[#DDD]">
+          <Table className="my-4 border-2 border-[#DDD]">
             <TableHeader className="bg-zinc-100 border-1 border-[#DDD]">
               <TableRow>
-                <TableHead className="font-bold border-r-1 border-[#DDD] w-[50%]">
+                <TableHead className="font-black border-r-1 border-[#DDD] w-[50%]">
                   Nome
                 </TableHead>
-                <TableHead className="font-bold border-r-1 border-[#DDD]">
+                <TableHead className="font-black border-r-1 border-[#DDD]">
                   Código
                 </TableHead>
               </TableRow>
@@ -74,7 +75,7 @@ export default function Updates() {
           </Table>
         </div>
       </div>
-      <button className="fixed bottom-8 right-8 bg-[#8270fa] text-white rounded-full p-4 flex items-center font-semibold">
+      <button className="fixed bottom-8 right-8 bg-indigo-600 text-white rounded-full p-4 flex items-center font-semibold">
         <Copy />
       </button>
     </div>
