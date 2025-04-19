@@ -9,27 +9,20 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue
-} from "@/components/ui/select" 
 
 const peoples = [
   {
     code: "12616",
     participant_code: "f2348f15a-3f1jf",
     name: "Edson Alves da Silva",
-    type: "Autista",
+    type: "Tipozinho",
     state: "PB"
   },
   {
     code: "12616",
     participant_code: "f2348f15a-3f1jf",
     name: "Wedne Morais de Araújo",
-    type: "Macaco",
+    type: "Tipozão",
     state: "PB"
   }
 ]
@@ -76,17 +69,7 @@ export default function Cards() {
                   <TableCell className="font-medium border-r-1 border-[#DDD]">{people.code}</TableCell>
                   <TableCell className="font-medium border-r-1 border-[#DDD]">{people.participant_code}</TableCell>
                   <TableCell className="font-medium border-r-1 border-[#DDD]">{people.name}</TableCell>
-                  <TableCell className="border-r-1 border-[#DDD] px-4">
-                    <Select defaultValue="Autista">
-                      <SelectTrigger className="border-1 pl-2 pr-1 border-[#DDD] rounded-sm h-8 w-full">
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent className="border-1 border-[#DDD] rounded-md">
-                        <SelectItem value="Autista">Autista</SelectItem>
-                        <SelectItem value="Macaco">Macaco</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
+                  <TableCell className="border-r-1 border-[#DDD]">{people.type}</TableCell>
                   <TableCell>{people.state}</TableCell>
                 </TableRow>
               ))}
