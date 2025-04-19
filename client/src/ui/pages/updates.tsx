@@ -15,14 +15,14 @@ const peoples = [
     code: "12616",
     participant_code: "f2348f15a-3f1jf",
     name: "Edson Alves da Silva",
-    type: "Autista",
+    type: "Tipozinho",
     state: "PB",
   },
   {
     code: "12616",
     participant_code: "f2348f15a-3f1jf",
     name: "Wedne Morais de Araújo",
-    type: "Macaco",
+    type: "Tipozão",
     state: "PB",
   },
 ];

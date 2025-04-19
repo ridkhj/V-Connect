@@ -9,3 +9,6 @@ __pycache__/
 # VSCode
 .vscode/
 .env
+
+# Sensitive data
+app/assets
