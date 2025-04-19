@@ -1,6 +1,6 @@
 import pandas as pd
 
-def parse_csv(filepath):
+def csv_parser(filepath):
     try:
         df = pd.read_csv(filepath)
         

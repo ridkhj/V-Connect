@@ -1,10 +1,10 @@
 import os
-from app.utils.csv_parser import parse_csv
+from app.utils.csv_parser import csv_parser
 
-def handle_csv_upload(file, upload_folder):
+def upload_service(file, upload_folder):
     filepath = os.path.join(upload_folder, file.filename)
     file.save(filepath)
 
-    data = parse_csv(filepath)
+    data = csv_parser(filepath)
 
     return data
