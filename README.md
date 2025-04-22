@@ -1,4 +1,6 @@
-  # Sistema de Prestação de Contas - Compassion
+# V Connect
+  
+### Sistema de Prestação de Contas - Compassion
 
   Este projeto tem como objetivo facilitar e automatizar partes do processo de prestação de contas à **Compassion**. A aplicação é composta por duas partes:
 
