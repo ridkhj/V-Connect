@@ -73,6 +73,10 @@
   - Pandas (para manipulação de dados)
   - Pytest (para testes)
 
-  ## 📄 Licença
+## 📄 Licença
 
-  Este projeto é open-source e está licenciado sob os termos da licença MIT.
+Este é um projeto **privado**. Todos os direitos são reservados.
+
+O uso, reprodução, distribuição ou modificação deste software, no todo ou em parte, é **estritamente proibido** sem autorização expressa e por escrito dos autores.
+
+Para mais informações, entre em contato com os mantenedores do projeto.
