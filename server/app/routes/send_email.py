@@ -5,20 +5,20 @@ send_email_bp = Blueprint('send_email', __name__)
 
 @send_email_bp.route('/send-email', methods=['POST'])
 def enviar_email():
-    dados = request.get_json()
+    data = request.get_json()   
     
-    destinatario = dados.get('destinatario')
-    assunto = dados.get('assunto')
-    corpo = dados.get('corpo')
+    recipients = data.get('recipients')
+    subject = data.get('subject')
+    body = data.get('body')
 
-    if not destinatario or not assunto or not corpo:
+    if not recipients or not subject or not body:
         return jsonify({'erro': 'Faltam campos obrigatórios'}), 400
 
     try:
         msg = Message(
-            subject=assunto,
-            recipients=[destinatario],
-            body=corpo
+            subject=subject,
+            recipients=[recipients],
+            body=body
         )
 
         from app import mail 
