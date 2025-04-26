@@ -1,28 +1,34 @@
-import { render, screen } from '@testing-library/react';
-import Sidebar from './sidebar';
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import Sidebar from "./sidebar";
 
-describe('Sidebar Component', () => {
-  it('should render the logo with correct alt text', () => {
+// Mocka apenas o FileUploader, porque ele é de outro arquivo
+vi.mock("@/components/file-uploader", () => ({
+  default: () => <div>FileUploader Component</div>
+}));
+
+describe("Sidebar", () => {
+  it("renderiza o logo e o título Connect", () => {
     render(<Sidebar />);
-    const logo = screen.getByAltText('Logo');
+
+    const logo = screen.getByAltText("Logo");
+    const title = screen.getByText("Connect");
+
     expect(logo).toBeInTheDocument();
-  });
-
-  it('should render the title "Connect"', () => {
-    render(<Sidebar />);
-    const title = screen.getByText('Connect');
     expect(title).toBeInTheDocument();
   });
 
-  it('should render the FileUploader component', () => {
+  it("renderiza o componente FileUploader", () => {
     render(<Sidebar />);
-    const fileUploader = screen.getByText(/upload/i);
-    expect(fileUploader).toBeInTheDocument();
+
+    expect(screen.getByText("FileUploader Component")).toBeInTheDocument();
   });
 
-  it('should render the footer with copyright text', () => {
+  it("renderiza o rodapé com direitos reservados", () => {
     render(<Sidebar />);
-    const footerText = screen.getByText(/© 20025 V Connect \| Todos os direitos reservados\./i);
-    expect(footerText).toBeInTheDocument();
+
+    expect(
+      screen.getByText("© 2025 V Connect | Todos os direitos reservados.")
+    ).toBeInTheDocument();
   });
 });
