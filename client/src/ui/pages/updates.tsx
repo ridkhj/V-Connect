@@ -75,7 +75,7 @@ export default function Updates() {
           </Table>
         </div>
       </div>
-      <button className="fixed bottom-8 right-8 bg-indigo-600 text-white rounded-full p-4 flex items-center font-semibold">
+      <button aria-label="Copiar" className="fixed bottom-8 right-8 bg-indigo-600 text-white rounded-full p-4 flex items-center font-semibold">
         <Copy />
       </button>
     </div>

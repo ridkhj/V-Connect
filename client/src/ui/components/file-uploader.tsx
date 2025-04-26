@@ -1,10 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { CheckCircle2, FileIcon, Trash, Upload } from 'lucide-react'
 import { cn } from '../lib/utils'
-import formatTimeAgo from '../functions/format-time-ago'
-import { Card, CardContent } from './ui/card'
 import { Progress } from './ui/progress'
-import { formatFileSize } from '../functions/format-size-file'
+import { Card, CardContent } from './ui/card'
+import formatTimeAgo from '@/functions/format-time-ago'
+import formatFileSize from '@/functions/format-file-size'
 
 interface UploadedFile {
   id: string;
