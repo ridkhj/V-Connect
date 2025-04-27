@@ -5,7 +5,7 @@ from app.services.generate_pdf_service import generate_pdf_service
 generate_pdf_bp = Blueprint('generate_pdf', __name__) 
 
 @generate_pdf_bp.route('/generate-pdf', methods=['POST'])
-def generate_pdf() -> bool:
+def generate_pdf():
     dados = request.get_json()
 
     if not dados or 'pessoas' not in dados:
