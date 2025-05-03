@@ -1,16 +1,18 @@
-from criarPdf import criar_pdf_cdpr, criar_pdf_atualizacoes
+from criarPdf import PdfGenerator
 from extratorDeDados import ExtratorDeDados
 from extratorCSV import ExtratorCsv
 
 
-extrator = ExtratorCsv(r'D:\projetos\V-Connect\server\scripts\assets\csv')
+extrator = ExtratorCsv()
 extrator.listarArquivos()
 
 
-leitorDados = ExtratorDeDados('server/scripts/assets/sheets/')
+leitorDados = ExtratorDeDados()
 leitorDados.listarArquivos()
 #participantesPatos = leitorDados.extrairDadosAtualizacao('server/scripts/awssets/sheets/atualizacoes.xlsx')
 #atualizacoes = leitorDados.extrairDadosCDPR('server/scripts/assets/sheets/cdpr.xlsx')
+geradorPdf = PdfGenerator()
 
-criar_pdf_cdpr("cdprPatos.pdf", leitorDados.cdprs, 'server/scripts/')
-criar_pdf_atualizacoes("atualizacoesPatos.pdf", leitorDados.atualizacoes , 'server/scripts/')  
+
+geradorPdf.criar_pdf_atualizacoes("atualizacoesPatos.pdf", leitorDados.atualizacoes )  
+geradorPdf.criar_pdf_cdpr("cdprPatos.pdf", leitorDados.cdprs)
