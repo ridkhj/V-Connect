@@ -34,13 +34,14 @@ class ExtratorCsv:
     def diferenciar_arquivos(self, path):
         csv_path = path
         sheetsPath = self.path / 'sheets' 
+        
         csv = pd.read_csv(csv_path, sep=";",
-                          encoding="latin-1",
-                          on_bad_lines="skip",
-                          skipfooter=0 , engine="python",
-                          quotechar='"',
-                          na_values=[""],
-                          )
+                        encoding="latin-1",
+                        on_bad_lines="skip",
+                        skipfooter=0 , engine="python",
+                        quotechar='"',
+                        na_values=[""],
+                        )
         primeira_coluna = csv.iloc[:, 0]
         
         excelWriter = None
@@ -48,7 +49,7 @@ class ExtratorCsv:
             if i == "DBOP_08_UPDATES19OUMAIS":
                  excelWriter = pd.ExcelWriter(sheetsPath / 'atualizacoes.xlsx')
                  break
-            elif i == "Idade e CDPR":
+            elif i == 'Idade e CDPR' :
                  excelWriter = pd.ExcelWriter(sheetsPath / 'cdpr.xlsx')
                  break
             elif i == 'DBOP_03_B2SOVERDUEV4':
@@ -57,6 +58,10 @@ class ExtratorCsv:
             elif i == 'DBOP_01_NSLV3':
                  excelWriter = pd.ExcelWriter(sheetsPath / 'nsl.xlsx')
                  break
+            elif i == 'DBOP_12_THANKYOULETTERS':
+                 excelWriter = pd.ExcelWriter(sheetsPath / 'agradecimento.xlsx')
+                 break
+        
             
         if excelWriter:
             csv.to_excel(excelWriter)

@@ -1,11 +1,12 @@
 class Carta:
-    def __init__(self, code, letterCode ,name, type ,questions, status ):
+    def __init__(self, code, letterCode ,name, type , status):
+        
         self._code = code
         self._name = name
         self._letterCode = letterCode
         self._type = type
-        self._questions = questions
         self._status = status
+        
 
     @property
     def code(self):
@@ -40,14 +41,6 @@ class Carta:
         self._type = value  
     
     @property
-    def questions(self):
-        return self._questions  
-    
-    @questions.setter
-    def questions(self, value):
-        self._questions = value
-    
-    @property
     def status(self):
         return self._status 
     
@@ -57,3 +50,47 @@ class Carta:
 
     def strRelatorio(self):
         return f"{self._code} - {self._name}"
+    
+
+class CartaReciproca (Carta):
+    def __init__(self, code, letterCode ,name, type , status, ageBracket, questions):
+        super().__init__(code, letterCode ,name, type , status)
+        self._questions= questions
+        self._ageBracket = ageBracket
+    
+    @property
+    def ageBracket(self):
+        return self._ageBracket
+    
+    @ageBracket.setter
+    def ageBracket(self, value):
+        self._ageBracket = value
+    
+    @property
+    def questions(self):
+        return self._questions
+    
+    @questions.setter
+    def questions(self, value):
+        self._questions = value
+
+class CartaNsl (Carta):
+    def __init__(self, code, letterCode ,name, type , status):
+        super().__init__(code, letterCode ,name, type , status)
+
+
+class CartaAgradecimento (Carta):
+    def __init__(self, code, letterCode ,name, type , status, questions):
+        super().__init__(code, letterCode ,name, type , status)
+        self._questions= questions
+        
+    @property
+    def questions(self):
+        return self._questions
+    
+    @questions.setter
+    def questions(self, value):
+        self._questions = value
+        
+
+

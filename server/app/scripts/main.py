@@ -9,6 +9,8 @@ extrator.listarArquivos()
 
 leitorDados = ExtratorDeDados()
 leitorDados.listarArquivos()
+
+
 #participantesPatos = leitorDados.extrairDadosAtualizacao('server/scripts/awssets/sheets/atualizacoes.xlsx')
 #atualizacoes = leitorDados.extrairDadosCDPR('server/scripts/assets/sheets/cdpr.xlsx')
 geradorPdf = PdfGenerator()
