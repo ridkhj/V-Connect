@@ -10,6 +10,7 @@ export default function Sidebar() {
       <div className="mt-5 w-full">
         <FileUploader />
       </div>
+
       <div className="bg-white absolute bottom-0 left-0 w-full border-t-2 border-#ddd p-2 flex justify-center items-center">
         <p className="text-xs font-medium">
           © 2025 V Connect | Todos os direitos reservados.

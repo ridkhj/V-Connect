@@ -1,6 +1,6 @@
 from flask import request, send_file, Blueprint
 from io import BytesIO
-from app.services.generate_pdf_service import generate_pdf_service
+from app.services.generate_pdf_service import generate_pdf
 
 generate_pdf_bp = Blueprint('generate_pdf', __name__) 
 

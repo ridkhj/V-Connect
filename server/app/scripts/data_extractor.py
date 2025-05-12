@@ -47,7 +47,34 @@ class SheetDataExtractor:
     def letters(self, value: list[Letter]):
         self._letters = value
 
-    def select_and_process_sheet_by_type(self):
+    def unity_find_sheet(self, str name): #recebe nome por exemplo 'atualizacoes.xlsx' ou 'cdpr.xlsx'
+        loadPath = self.path / 'sheets' / name
+
+        if not loadPath.exists():
+            raise FileNotFoundError(f"O arquivo {loadPath} não foi encontrado")
+
+        return loadPath
+    
+    def unity_process_sheet(fileName):
+        
+        filePath = unity_find_sheet(fileName)
+
+        if file.startswith('atualizacoes'):
+            return self.extract_updates_data(filePath)
+        elif file.startswith('cdpr'): 
+            return self.extract_cdpr_data(filePath) 
+        elif file.startswith('reciprocas'):
+            return self.extract_reciprocal_letter_data(filePath)
+        elif file.startswith('nsl'):
+            return self.extract_nsl_data(filePath)
+        elif file.startswith('agradecimento'):
+            return self.extract_thankyou_letter_data(filePath)
+
+
+        
+        
+
+    def select_and_process_sheet_by_type(self): #separar em dois metodos
         loadPath = self.path / 'sheets'
 
         if loadPath.exists():
@@ -57,15 +84,15 @@ class SheetDataExtractor:
 
             for file in files_xlsx:
                 if file.startswith('atualizacoes'):
-                    self.extract_updates_data(os.path.join(loadPath, file))
+                    return self.extract_updates_data(os.path.join(loadPath, file))
                 elif file.startswith('cdpr'): 
-                    self.extract_cdpr_data(os.path.join(loadPath, file)) 
+                    return self.extract_cdpr_data(os.path.join(loadPath, file)) 
                 elif file.startswith('reciprocas'):
-                    self.extract_reciprocal_letter_data(os.path.join(loadPath, file))
+                    return self.extract_reciprocal_letter_data(os.path.join(loadPath, file))
                 elif file.startswith('nsl'):
-                    self.extract_nsl_data(os.path.join(loadPath, file))
+                    return self.extract_nsl_data(os.path.join(loadPath, file))
                 elif file.startswith('agradecimento'):
-                    self.extract_thankyou_letter_data(os.path.join(loadPath, file))
+                    return self.extract_thankyou_letter_data(os.path.join(loadPath, file))
         else:
             raise FileNotFoundError(f"O diretório {loadPath} não foi encontrado.")
                 
@@ -93,7 +120,8 @@ class SheetDataExtractor:
                 
             row += 1
 
-        self.atualizacoes = atualizacoes
+        self.updates = atualizacoes
+        return self.updates
 
     def extract_cdpr_data(self, path):
         arquivo = openpyxl.load_workbook(path)
@@ -195,3 +223,4 @@ class SheetDataExtractor:
             row += 1
 
         self._letters.extend(letters)
+        
