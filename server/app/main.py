@@ -1,4 +1,4 @@
-from app.services.generate_pdf import PdfGenerator
+from services.generate_pdf import PdfGenerator
 from app.scripts.data_extractor import SheetDataExtractor
 from app.scripts.csv_extractor import CsvExtractor
 

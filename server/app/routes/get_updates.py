@@ -1,16 +1,21 @@
-from flask import request, send_file, Blueprint
-from io import BytesIO
+from flask import Blueprint
 from app.scripts.data_extractor import SheetDataExtractor
-from json import dickter
+from app.utils.turn_json import object_to_json
 
 get_updates_bp = Blueprint('getupdates',__name__)
-
+ 
 @get_updates_bp.route('/get-updates', methods = ['GET'])
 
 def get_updates():
 
     sheetExtractor = SheetDataExtractor()
-    data = sheetExtractor.unity_process_sheet('atualizacoes.xlsx')
-    if not data:
+    updates = sheetExtractor.unity_process_sheet('atualizacoes.xlsx')
+    if not updates:
         return {"error": "Erro no processamento de arquivoss"}, 404
     
+    json_data = object_to_json(updates)
+    return json_data, 200
+
+
+
+

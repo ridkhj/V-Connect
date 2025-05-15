@@ -1,5 +1,4 @@
-from flask import request, send_file, Blueprint
-from io import BytesIO
+from flask import jsonify, request, send_file, Blueprint
 from app.scripts.csv_extractor import CsvExtractor
 
 
@@ -9,11 +8,8 @@ process_files_bp = Blueprint('processfiles',__name__)
 
 def process_files():
 
-    dados = request.get_json()
+    #gerar verificação da pasta de arquivos
     
-    if not dados or '.csv' not in dados:
-        return {"erro": "Dados inválidos"}, 400
-
     extrator = CsvExtractor()
     extrator.read_csv_in_pattern_folder()
 
