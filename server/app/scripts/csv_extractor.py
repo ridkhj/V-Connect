@@ -1,3 +1,4 @@
+from operator import contains
 import pandas as pd
 import os
 from pathlib import Path
@@ -47,7 +48,7 @@ class CsvExtractor:
             if i == "DBOP_08_UPDATES19OUMAIS":
                  excelWriter = pd.ExcelWriter(sheetsPath / 'atualizacoes.xlsx')
                  break
-            elif i == 'Idade e CDPR' :
+            elif i == 'Idade e CDPR'  or 'Vcdpr':
                  excelWriter = pd.ExcelWriter(sheetsPath / 'cdpr.xlsx')
                  break
             elif i == 'DBOP_03_B2SOVERDUEV4':

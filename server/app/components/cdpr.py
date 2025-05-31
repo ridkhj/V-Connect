@@ -33,3 +33,10 @@ class Cdpr:
 
     def strRelatorio(self):
         return f"{self._code} - {self._name}"
+    
+    def to_dict(self):
+        return {
+            "code": self._code,
+            "name": self._name,
+            "age": self._age
+        }

@@ -51,46 +51,19 @@ class Letter:
     def strRelatorio(self):
         return f"{self._code} - {self._name}"
     
-
-class ReciprocalLetter (Letter):
-    def __init__(self, code, letterCode ,name, type , status, ageBracket, questions):
-        super().__init__(code, letterCode ,name, type , status)
-        self._questions= questions
-        self._ageBracket = ageBracket
+    def to_dict(self):
+        return {
+            'code': self._code,
+            'letterCode': self._letterCode,
+            'name': self._name,
+            'type': self._type,
+            'status': self._status
+        }
     
-    @property
-    def ageBracket(self):
-        return self._ageBracket
-    
-    @ageBracket.setter
-    def ageBracket(self, value):
-        self._ageBracket = value
-    
-    @property
-    def questions(self):
-        return self._questions
-    
-    @questions.setter
-    def questions(self, value):
-        self._questions = value
-
-class NslLetter (Letter):
-    def __init__(self, code, letterCode ,name, type , status):
-        super().__init__(code, letterCode ,name, type , status)
 
 
-class ThankyouLetter (Letter):
-    def __init__(self, code, letterCode ,name, type , status, questions):
-        super().__init__(code, letterCode ,name, type , status)
-        self._questions= questions
-        
-    @property
-    def questions(self):
-        return self._questions
-    
-    @questions.setter
-    def questions(self, value):
-        self._questions = value
+
+
         
 
 

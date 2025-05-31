@@ -3,8 +3,7 @@ class Update:
         self._code = code
         self._name = name
         self._status = status
-        # self._overdue = overdue
-
+        
     @property
     def code(self):
         return self._code
@@ -31,3 +30,10 @@ class Update:
 
     def strRelatorio(self):
         return f"{self._code} - {self._name}"
+    
+    def to_dict(self):
+        return {
+            'code': self._code,
+            'name': self._name,
+            'status': self._status
+        }

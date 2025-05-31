@@ -1,8 +1,12 @@
+import re
 import openpyxl
 import os
 from app.components.cdpr import Cdpr
 from app.components.update import Update
-from app.components.letter import Letter, NslLetter, ReciprocalLetter, ThankyouLetter
+from app.components.letter import Letter
+from app.components.reciprocal_letter import ReciprocalLetter
+from app.components.nsl_letter import NslLetter
+from app.components.thankyou_letter import ThankyouLetter
 from pathlib import Path 
 
 
@@ -13,7 +17,9 @@ class SheetDataExtractor:
         self._path = Path(__file__).parent.parent / 'assets'
         self._updates: list[Update] = []
         self._cdprs: list[Cdpr] = []
-        self._letters: list[Letter] = []
+        self._reciprocal_letters: list[ReciprocalLetter] = []
+        self._nsl_letters: list[NslLetter] = []
+        self._thankyou_letters: list[ThankyouLetter] = []
         
     @property
     def path(self):
@@ -47,7 +53,31 @@ class SheetDataExtractor:
     def letters(self, value: list[Letter]):
         self._letters = value
 
-    def select_and_process_sheet_by_type(self):
+    def unity_find_sheet(self, name): #recebe nome por exemplo 'atualizacoes.xlsx' ou 'cdpr.xlsx'
+        loadPath = self.path / 'sheets' / name
+
+        if not loadPath.exists():
+            raise FileNotFoundError(f"O arquivo {loadPath} não foi encontrado")
+
+        return loadPath
+    
+    def unity_process_sheet(self, fileName):
+        
+        filePath = self.unity_find_sheet(fileName)
+
+        if fileName.startswith('atualizacoes'):
+            return self.extract_updates_data(filePath)
+        elif fileName.startswith('cdpr'): 
+            return self.extract_cdpr_data(filePath) 
+        elif fileName.startswith('reciprocas'):
+            return self.extract_reciprocal_letter_data(filePath)
+        elif fileName.startswith('nsl'):
+            return self.extract_nsl_data(filePath)
+        elif fileName.startswith('agradecimento'):
+            return self.extract_thankyou_letter_data(filePath)
+
+
+    def select_and_process_sheet_by_type(self): 
         loadPath = self.path / 'sheets'
 
         if loadPath.exists():
@@ -56,19 +86,10 @@ class SheetDataExtractor:
             files_xlsx = [file for file in files if file.endswith('.xlsx')]
 
             for file in files_xlsx:
-                if file.startswith('atualizacoes'):
-                    self.extract_updates_data(os.path.join(loadPath, file))
-                elif file.startswith('cdpr'): 
-                    self.extract_cdpr_data(os.path.join(loadPath, file)) 
-                elif file.startswith('reciprocas'):
-                    self.extract_reciprocal_letter_data(os.path.join(loadPath, file))
-                elif file.startswith('nsl'):
-                    self.extract_nsl_data(os.path.join(loadPath, file))
-                elif file.startswith('agradecimento'):
-                    self.extract_thankyou_letter_data(os.path.join(loadPath, file))
+                self.unity_process_sheet(file)
         else:
             raise FileNotFoundError(f"O diretório {loadPath} não foi encontrado.")
-                
+                    
     def extract_updates_data(self, path):
         file = openpyxl.load_workbook(path)
         sheet = file.active
@@ -80,8 +101,8 @@ class SheetDataExtractor:
 
         while (access(row, column).value is not None and access(row, column+1).value is not None):
 
-            codigo = access(row, column).value
-            nome = access(row, column+1).value
+            nome = access(row, column).value
+            codigo = access(row, column+1).value
             status = access(row, column+3).value
 
             
@@ -93,7 +114,8 @@ class SheetDataExtractor:
                 
             row += 1
 
-        self.atualizacoes = atualizacoes
+        self.updates = atualizacoes
+        return self.updates
 
     def extract_cdpr_data(self, path):
         arquivo = openpyxl.load_workbook(path)
@@ -106,15 +128,16 @@ class SheetDataExtractor:
 
         while (access(row, column).value is not None and access(row, column+1).value is not None):
 
-            codigo = access(row, column).value
-            nome = access(row, column+1).value
-            age = access(row, column+3).value
+            nome = access(row, column).value
+            codigo = access(row, column+1).value
+            age = access(row, column+2).value
 
             cdprs.append(Cdpr(codigo, nome, age))
     
             row += 1
 
         self.cdprs = cdprs
+        return self.cdprs
     
     def extract_reciprocal_letter_data(self, path):
         arquivo = openpyxl.load_workbook(path)
@@ -142,7 +165,8 @@ class SheetDataExtractor:
 
             row += 1
 
-        self._letters.extend(letters)
+        self._reciprocal_letters.extend(letters)
+        return self._reciprocal_letters
     
     def extract_nsl_data(self, path):
         
@@ -169,7 +193,8 @@ class SheetDataExtractor:
 
             row += 1
 
-        self._letters.extend(letters)
+        self._nsl_letters.extend(letters)
+        return self._nsl_letters
 
     def extract_thankyou_letter_data(self, path):
          
@@ -194,4 +219,6 @@ class SheetDataExtractor:
             
             row += 1
 
-        self._letters.extend(letters)
+        self._thankyou_letters.extend(letters)
+        return self._thankyou_letters
+        

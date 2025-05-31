@@ -19,5 +19,5 @@ def upload_file():
             return jsonify({ "message": "File processed", "file": file.filename }), 200
 
         return jsonify({ "error": "Invalid file type" }), 400
-    else:
-        return render_template('upload.html')
+    
+    return render_template('upload.html')
