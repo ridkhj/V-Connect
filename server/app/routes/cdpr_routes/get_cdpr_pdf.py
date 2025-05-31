@@ -5,8 +5,6 @@ from io import BytesIO
 from app.services.generate_pdf import PdfGenerator
 from app.components.cdpr import Cdpr
 from app.utils.validators.cdpr_validator import validate_cdpr
-
-
     
 get_cdprs_pdf_bp = Blueprint('getcdprspdf', __name__) 
 
