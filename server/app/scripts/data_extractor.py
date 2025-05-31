@@ -101,8 +101,8 @@ class SheetDataExtractor:
 
         while (access(row, column).value is not None and access(row, column+1).value is not None):
 
-            codigo = access(row, column).value
-            nome = access(row, column+1).value
+            nome = access(row, column).value
+            codigo = access(row, column+1).value
             status = access(row, column+3).value
 
             
@@ -128,8 +128,8 @@ class SheetDataExtractor:
 
         while (access(row, column).value is not None and access(row, column+1).value is not None):
 
-            codigo = access(row, column).value
-            nome = access(row, column+1).value
+            nome = access(row, column).value
+            codigo = access(row, column+1).value
             age = access(row, column+2).value
 
             cdprs.append(Cdpr(codigo, nome, age))

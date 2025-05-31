@@ -1,10 +1,10 @@
+from email import header
 from os import name
 from flask import request, send_file, Blueprint, jsonify
 from io import BytesIO
 from app.services.generate_pdf import PdfGenerator
-from app.utils.validators.update_validator import validate_update
-from app.components.update import Update
-
+from app.components.cdpr import Cdpr
+from app.utils.validators.cdpr_validator import validate_cdpr
 
 
     
@@ -19,16 +19,27 @@ def generate_cdprs_pdf():
     if not data:
         return {"error":"Corpo vazio ou sem dados no corpo"}
     
-
+    try: 
+        if not validate_cdpr(data):
+             return jsonify({"erro": "Validação falhou para os dados fornecidos."}), 400
+    except ValueError as e: 
+        return jsonify({"error": str(e)})
+     
     try:
         cdprs = parse_cdprs(data)
     except ValueError as e: 
         return jsonify({"error": str(e)})
     
+    pdf_generator = PdfGenerator()
+    pdf_file = pdf_generator.create_cdpr_pdf(cdprs)
     
-    
-    print(cdprs)
-    return data
+   
+    return send_file(
+        pdf_file,
+        as_attachment= True,
+        download_name='cdprs.pdf',
+        mimetype='application/pdf'
+    )
 
 
 def parse_cdprs(data): 
@@ -39,14 +50,15 @@ def parse_cdprs(data):
     cdprs = [] 
 
     for item in data:
-        name = item.get("code")
+        
         code = item.get("code")
+        name = item.get("name")
         age = item.get("age")
 
         if not all([code, name, age]):
             return ValueError('Campos Obrigatórios [code, name, status] estão faltando em um ou mais objetos')
 
-        cdpr_aux = Update(code, name, age)
+        cdpr_aux = Cdpr(code, name, age)
         cdprs.append(cdpr_aux)  
 
     return cdprs

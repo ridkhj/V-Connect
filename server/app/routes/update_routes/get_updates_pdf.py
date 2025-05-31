@@ -55,7 +55,7 @@ def parse_updates(data):
             raise ValueError('Campos Obrigatórios [code, name, status] estão faltando em um ou mais objetos')
 
         update_obj = Update(code, name, status)
-        updates.append(update_obj) 
+        updates.append(update_obj)  
     
     return updates
 

@@ -1,4 +1,4 @@
-from ast import Bytes
+
 import os
 from io import BytesIO
 
@@ -124,4 +124,5 @@ class PdfGenerator:
 
             c.save()
             buffer.seek(0)
+
             return buffer
