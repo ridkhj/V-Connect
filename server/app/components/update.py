@@ -3,8 +3,7 @@ class Update:
         self._code = code
         self._name = name
         self._status = status
-        # self._overdue = overdue
-
+        
     @property
     def code(self):
         return self._code

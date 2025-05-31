@@ -10,7 +10,3 @@ leitorDados = SheetDataExtractor()
 leitorDados.select_and_process_sheet_by_type()
 
 geradorPdf = PdfGenerator()
-
-
-geradorPdf.criar_pdf_atualizacoes("atualizacoesPatos.pdf", leitorDados.atualizacoes )  
-geradorPdf.criar_pdf_cdpr("cdprPatos.pdf", leitorDados.cdprs)

@@ -130,13 +130,14 @@ class SheetDataExtractor:
 
             codigo = access(row, column).value
             nome = access(row, column+1).value
-            age = access(row, column+3).value
+            age = access(row, column+2).value
 
             cdprs.append(Cdpr(codigo, nome, age))
     
             row += 1
 
         self.cdprs = cdprs
+        return self.cdprs
     
     def extract_reciprocal_letter_data(self, path):
         arquivo = openpyxl.load_workbook(path)

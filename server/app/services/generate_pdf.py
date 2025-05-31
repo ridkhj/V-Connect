@@ -1,6 +1,8 @@
+from ast import Bytes
 import os
-import io 
+from io import BytesIO
 
+from flask import make_response
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from pathlib import Path
@@ -21,22 +23,20 @@ class PdfGenerator:
     
        
 
-        def create_updates_pdf(self, nome_arquivo, participantes ):
+        def create_updates_pdf(self, participantes):
+        
+            buffer = BytesIO()
+            c = canvas.Canvas(buffer, pagesize=A4)
             
-            caminho_arquivo = self._loadPath
-            nome_arquivo = os.path.join(caminho_arquivo, nome_arquivo)
-            c = canvas.Canvas(nome_arquivo, pagesize=A4)
-            largura, altura = A4
             alturaAtual = 0
             dataBasePath = os.path.join(self.path, 'images')
-            # largura = 595.2755905511812
-            # altura = 841.8897637795277
+
             if (len(participantes) > 3):
                 for participante in participantes:
 
                     
                     nome = participante.name
-                    codigo = participante.code
+                    codigo = participante.code  
 
                 
                     c.setFont(psfontname="Courier", size=10)
@@ -75,23 +75,25 @@ class PdfGenerator:
 
                 # Salvando o PDF
             c.save()
+            buffer.seek(0)
+            return buffer
 
 
-        def create_cdpr_update(self, nome_arquivo, atualizacoes):
+        def create_cdpr_pdf(self, cdprs):
 
-            caminho_arquivo = self._loadPath
-            nome_arquivo = os.path.join(caminho_arquivo, nome_arquivo)
-            c = canvas.Canvas(nome_arquivo, pagesize=A4)
+            
+            buffer = BytesIO()
+            c = canvas.Canvas(buffer, pagesize=A4)
+
             largura, altura = A4
             dataBasePath = os.path.join(self.path, 'cdpr_model')
-            # largura = 595.2755905511812
-            # altura = 841.8897637795277
+           
             
-            for atualizacao in atualizacoes:
+            for cdpr in cdprs:
 
-                nome = atualizacao.name
-                codigo = atualizacao.code
-                age = atualizacao.age
+                nome = cdpr.name
+                codigo = cdpr.code
+                age = cdpr.age
 
                 if age == "0-2":
                     c.drawImage(image= os.path.join(dataBasePath, '0-2.jpg'),
@@ -121,4 +123,5 @@ class PdfGenerator:
                 c.showPage()
 
             c.save()
-        
+            buffer.seek(0)
+            return buffer
