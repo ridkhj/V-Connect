@@ -101,8 +101,8 @@ class SheetDataExtractor:
 
         while (access(row, column).value is not None and access(row, column+1).value is not None):
 
-            nome = access(row, column).value
-            codigo = access(row, column+1).value
+            codigo = access(row, column).value
+            nome  = access(row, column+1).value
             status = access(row, column+3).value
 
             
@@ -212,8 +212,8 @@ class SheetDataExtractor:
             letterCode = access(row, column+1).value
             name = access(row, column+2).value
             type = access(row, column+4).value
-            questions = access(row, column+9).value
-            status = access(row,column+10).value   
+            questions = access(row, column+10).value
+            status = access(row,column+12).value   
 
             letters.append(ThankyouLetter(code=code,letterCode= letterCode,name= name,type= type,status= status, questions=questions))
             

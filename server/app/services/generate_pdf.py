@@ -1,6 +1,7 @@
 
 import os
 from io import BytesIO
+from warnings import catch_warnings
 
 from flask import make_response
 from reportlab.lib.pagesizes import A4
@@ -126,3 +127,54 @@ class PdfGenerator:
             buffer.seek(0)
 
             return buffer
+
+        def create_letters_pdf(type, letters):
+            buffer = BytesIO()
+            c = canvas.Canvas(buffer, pagesize=A4)
+
+            largura, altura = A4
+       
+            # elf._code = code
+            # self._name = name
+            # self._letterCode = letterCode
+            # self._type = type
+            # self._status = status
+
+            alturaAtual = 0
+            for letter in letters:
+
+                nome = letter.name
+                participant_code = letter.code  
+                letter_code = letter.letterCode
+                letter_type = letter.type
+                status = letter.status 
+
+                try:
+                   questions = letter.questions
+                except AttributeError:
+                    questions = None
+            
+                if (questions is not None):
+                    c.setFont(psfontname="Courier", size=6)
+                    c.drawString(x=30, y=800-alturaAtual, text=letter_code + 
+                                "   " + participant_code + "   " + nome + "   " + letter_type +"  "+ questions + "   " + status, mode=2)
+                else:
+                    c.setFont(psfontname="Courier", size=6)
+                    c.drawString(x=30, y=800-alturaAtual, text=letter_code + 
+                                "   " + participant_code + "   " + nome + "   " + letter_type + "   " + status, mode=2)
+
+
+                alturaAtual = alturaAtual + 12
+
+                if (alturaAtual > 750):
+                    c.showPage()
+                    alturaAtual = 0
+                alturaAtual += 15
+                        
+                
+            c.save()
+            buffer.seek(0)
+
+            return buffer
+
+              
