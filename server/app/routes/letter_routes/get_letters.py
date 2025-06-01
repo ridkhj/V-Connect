@@ -21,7 +21,6 @@ def get_letters(type):
 
 get_letters_bp.get('/<type>')(get_letters)
 
-
 def validate_type(type):
     valid_types = ['reciprocas', 'nsl', 'agradecimento']
     if type not in valid_types:
