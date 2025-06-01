@@ -6,14 +6,10 @@ from app.components.letter import Letter
 from app.components.reciprocal_letter import ReciprocalLetter
 from app.services.generate_pdf import PdfGenerator
 
-
-
 get_letters_pdf_bp = Blueprint('getletterspdf',__name__, url_prefix='/get-letters-pdf')
 
 def get_letters(type):
-
     data = request.get_json()
-
     try:
         if not validate_type(type):
             return {"error" : "tipo inválido"}

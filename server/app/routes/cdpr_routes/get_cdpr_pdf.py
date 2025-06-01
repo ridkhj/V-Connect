@@ -6,10 +6,10 @@ from app.services.generate_pdf import PdfGenerator
 from app.components.cdpr import Cdpr
 from app.utils.validators.cdpr_validator import validate_cdpr
     
-get_cdprs_pdf_bp = Blueprint('getcdprspdf', __name__) 
+get_cdpr_pdf_bp = Blueprint('getcdprspdf', __name__) 
 
 
-@get_cdprs_pdf_bp.route('/get-cdprs-pdf', methods=['POST'])
+@get_cdpr_pdf_bp.route('/get-cdprs-pdf', methods=['POST'])
 def generate_cdprs_pdf():
 
     data = request.get_json()
