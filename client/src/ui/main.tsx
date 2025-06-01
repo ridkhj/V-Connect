@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
 import App from "@/app"
-import Cards from "@/pages/cards"
+import Letters from "@/pages/letters"
 import Cdprs from "@/pages/cdprs"
 import Updates from "@/pages/updates"
 
@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")!).render(
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/cards" element={<Cards />} />
+        <Route path="/letters" element={<Letters />} />
         <Route path="/updates" element={<Updates />} />
         <Route path="/cdprs" element={<Cdprs/>} />
       </Routes>

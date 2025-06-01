@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import Cards from '@/pages/cards'
+import Cards from '@/pages/letters'
 
 describe('Cards', () => {
   it('renderiza o título do relatório', () => {

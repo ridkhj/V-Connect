@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback } from 'react'
-import { CheckCircle2, FileIcon, Trash, Upload } from 'lucide-react'
-import { cn } from '../lib/utils'
-import { Progress } from './ui/progress'
-import { Card, CardContent } from './ui/card'
-import formatTimeAgo from '@/functions/format-time-ago'
-import formatFileSize from '@/functions/format-file-size'
+import { useState, useRef, useCallback, useEffect } from 'react'
+import { CheckCircle2, FileIcon, Upload } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
+import { Card, CardContent } from '@/components/ui/card'
+import formatTimeAgo from '@/utils/format-time-ago'
+import formatFileSize from '@/utils/format-file-size'
+import { api } from '@/services/api'
 
 interface UploadedFile {
   id: string;
@@ -25,67 +26,74 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      uploadFiles(e.target.files);
-      onUpload!(e.target.files[0]);
+  const fetchFiles = async () => {
+    try {
+      const response = await api.get('/get-csv-files');
+      if (response.data.success) {
+        const formattedFiles = response.data.data.map((file: UploadedFile) => ({
+          ...file,
+          uploadedAt: new Date(file.uploadedAt)
+        }));
+        setFiles(formattedFiles);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar arquivos:', error);
     }
   };
 
-  const uploadFiles = (fileList: FileList) => {
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  const uploadFiles = async (fileList: FileList) => {
     setUploading(true);
     setUploadProgress(0);
-    
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 5;
+
+    try {
+      const formData = new FormData();
+      Array.from(fileList).forEach(file => {
+        formData.append('files', file);
       });
-    }, 100);
-    
-    setTimeout(() => {
-      clearInterval(interval);
+
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => Math.min(prev + 5, 90));
+      }, 100);
+
+      await api.post('/upload-file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      clearInterval(progressInterval);
       setUploadProgress(100);
-      
-      const newFiles = Array.from(fileList).map(file => ({
-        id: Math.random().toString(36).substr(2, 9),
-        name: file.name,
-        size: file.size,
-        uploadedAt: new Date()
-      }));
-      
-      setFiles(prev => [...newFiles, ...prev]);
-      
+
+      await api.post('/process-files');
+
+      await fetchFiles();
+
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    
+
       setTimeout(() => {
         setUploading(false);
         setUploadProgress(0);
       }, 500);
-    }, 2000);
+
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      setUploading(false);
+      setUploadProgress(0);
+    }
   };
 
-  const deleteFile = (id: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
-  };
-
-  const addFiles = (fileList: FileList) => {
-    const newFiles = Array.from(fileList).map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      name: file.name,
-      size: file.size,
-      uploadedAt: new Date()
-    }));
-    
-    setFiles(prev => [...newFiles, ...prev]);
-    
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      uploadFiles(e.target.files);
+      if (onUpload && e.target.files[0]) {
+        onUpload(e.target.files[0]);
+      }
     }
   };
 
@@ -116,17 +124,17 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
     setIsDragging(false);
     
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      addFiles(e.dataTransfer.files);
+      uploadFiles(e.dataTransfer.files);
     }
   }, []);
 
   return (
     <Card className="w-full p-0 max-w-md bg-white shadow-md overflow-hidden border-2 border-[#DDD]">
-      <div className="flex p-4 gap-1.5 border-b-2 border-[#DDD]">
+      <div className="flex p-4 border-b-2 border-[#DDD]">
         <button
           onClick={() => setSelectedTab('upload')}
           className={cn(
-            "flex-1 py-2 px-4 rounded-full text-center font-bold text-sm transition-colors",
+            "flex-1 py-2 px-4 rounded-l-full text-center font-bold text-sm transition-colors",
             selectedTab === 'upload' 
               ? "bg-indigo-600 text-white hover:bg-indigo-700"
               : "bg-[#f1f1f1] text-indigo-600" 
@@ -137,7 +145,7 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
         <button
           onClick={() => setSelectedTab('recent')}
           className={cn(
-            "flex-1 py-2 px-4 rounded-full text-center font-bold text-sm transition-colors",
+            "flex-1 py-2 px-4 rounded-r-full text-center font-bold text-sm transition-colors",
             selectedTab === 'recent' 
               ? "bg-indigo-600 text-white hover:bg-indigo-700"
               : "bg-[#f1f1f1] text-indigo-600" 
@@ -152,6 +160,7 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
           onChange={handleFileChange}
           className="hidden"
           multiple
+          accept=".csv"
         />
       </div>
 
@@ -218,8 +227,7 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                   {uploadProgress === 100 && (
                     <div className="flex items-center text-green-500 gap-1 text-sm">
                       <CheckCircle2 className="h-4 w-4" />
-                      <span>Upload 
-                        concluído!</span>
+                      <span>Upload concluído!</span>
                     </div>
                   )}
                 </div>
@@ -227,7 +235,7 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
             )}
           </>
         ) : (
-          <div className="py-2">
+          <div>
             {files.length > 0 ? (
               <>
                 <div className="divide-y divide-gray-100">
@@ -237,10 +245,10 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                         <div className="bg-indigo-50 p-2 rounded">
                           <FileIcon className="h-5 w-5 text-indigo-500" />
                         </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-700">
-                              {file.name.length > 15 ? file.name.slice(0, 15) + '...' : file.name}
-                            </p>
+                        <div>
+                          <p className="text-sm font-medium text-gray-700">
+                            {file.name.length > 15 ? file.name.slice(0, 15) + '...' : file.name}
+                          </p>
                           <p className="text-xs text-gray-500">{formatTimeAgo(file.uploadedAt)}</p>
                         </div>
                       </div>
@@ -248,9 +256,12 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                         <span className="text-xs bg-gray-100 py-1 px-2 rounded-full text-gray-600 font-medium">
                           {formatFileSize(file.size)}
                         </span>
-                        <button className="text-red-400 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
-                          <Trash onClick={() => deleteFile(file.id)} className="h-4 w-4" />
-                        </button>
+                        {/* <button 
+                          onClick={() => deleteFile(file.id)}
+                          className="text-red-400 hover:text-red-600 p-1 rounded-full hover:bg-gray-100"
+                        >
+                          <Trash className="h-4 w-4" />
+                        </button> */}
                       </div>
                     </div>
                   ))}
@@ -279,4 +290,4 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
       </CardContent>
     </Card>
   );
-};
+}
