@@ -1,3 +1,4 @@
+from tkinter.messagebox import RETRY
 from flask import Blueprint
 from flask import request
 from app.scripts.data_extractor import SheetDataExtractor
@@ -9,9 +10,12 @@ get_letters_bp = Blueprint('getletters',__name__, url_prefix='/get-letters')
 def get_letters(type):
 
     type = validate_type(type)
-
-    sheetExtractor = SheetDataExtractor()
-    letters = sheetExtractor.unity_process_sheet(type)
+    
+    try:
+        sheetExtractor = SheetDataExtractor()
+        letters = sheetExtractor.unity_process_sheet(type)
+    except ValueError as e:
+        return {"error" : str(e)}
     
     if not letters:
         return {"error": "Erro no processamento de arquivos"}, 404  
@@ -20,7 +24,6 @@ def get_letters(type):
     return letters_json, 200
 
 get_letters_bp.get('/<type>')(get_letters)
-
 
 def validate_type(type):
     valid_types = ['reciprocas', 'nsl', 'agradecimento']

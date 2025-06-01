@@ -11,6 +11,7 @@ class ThankyouLetter (Letter):
         return self._questions
     
     @questions.setter
+    
     def questions(self, value):
         self._questions = value
 
