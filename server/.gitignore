@@ -11,4 +11,5 @@ __pycache__/
 .env
 
 # Sensitive data
-app/assets
+app/assets/csv
+app/assets/sheets
