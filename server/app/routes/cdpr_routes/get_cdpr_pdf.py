@@ -12,6 +12,76 @@ get_cdpr_pdf_bp = Blueprint('getcdprspdf', __name__)
 @get_cdpr_pdf_bp.route('/get-cdprs-pdf', methods=['POST'])
 def generate_cdprs_pdf():
 
+    """
+    Gera um arquivo PDF contendo dados de CDPR
+    ---
+    tags:
+      - CDPR
+    summary: Gera um arquivo PDF a partir de dados de CDPR
+    description: Recebe um payload JSON com dados de CDPR, valida os dados e retorna um arquivo PDF com os dados processados.
+    consumes:
+      - application/json
+    produces:
+      - application/pdf
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - name
+              - age
+            properties:
+              code:
+                type: string
+                description: O código do CDPR
+                example: "CDPR123"
+              name:
+                type: string
+                description: O nome associado ao CDPR
+                example: "João Silva"
+              age:
+                type: integer
+                description: A idade associada ao CDPR
+                example: 30
+    responses:
+      200:
+        description: Arquivo PDF gerado com sucesso
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      400:
+        description: Payload inválido ou validação falhou
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                error: "Validação falhou para os dados fornecidos."
+      500:
+        description: Erro interno do servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                error: "Erro interno do servidor"
+    """
+
     data = request.get_json()
 
     if not data:
