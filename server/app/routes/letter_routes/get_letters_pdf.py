@@ -9,6 +9,111 @@ from app.services.generate_pdf import PdfGenerator
 get_letters_pdf_bp = Blueprint('getletterspdf',__name__, url_prefix='/get-letters-pdf')
 
 def get_letters(type):
+    """
+    Gera um arquivo PDF com cartas do tipo especificado
+    ---
+    tags:
+      - Cartas
+    summary: Gera um PDF contendo cartas com base no tipo fornecido
+    description: Recebe um payload JSON com dados de cartas e um tipo de carta especificado no caminho da URL (reciprocas, nsl ou agradecimento). Valida os dados e gera um arquivo PDF com as cartas processadas. Suporta cartas normais (sem perguntas) e cartas recíprocas (com perguntas).
+    consumes:
+      - application/json
+    produces:
+      - application/pdf
+    parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+          enum: ['reciprocas', 'nsl', 'agradecimento']
+          example: 'reciprocas'
+        description: Tipo de carta a ser gerada (reciprocas, nsl ou agradecimento)
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - letterCode
+              - name
+              - type
+              - status
+            properties:
+              code:
+                type: string
+                description: Código da carta
+                example: "LTR123"
+              letterCode:
+                type: string
+                description: Código específico da carta
+                example: "LC456"
+              name:
+                type: string
+                description: Nome associado à carta
+                example: "João Silva"
+              type:
+                type: string
+                description: Tipo da carta (deve corresponder ao parâmetro no caminho)
+                example: "reciprocas"
+              status:
+                type: string
+                description: Status da carta
+                example: "Enviada"
+              questions:
+                type: array
+                description: Lista de perguntas (obrigatória para cartas do tipo 'reciprocas', opcional para outros tipos)
+                items:
+                  type: string
+                  example: "Qual é o status atual do projeto?"
+    responses:
+      200:
+        description: Arquivo PDF gerado com sucesso
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      400:
+        description: Tipo inválido ou dados fornecidos inválidos
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                error: "Tipo inválido: teste. Tipos válidos: reciprocas, nsl, agradecimento"
+      404:
+        description: Corpo da requisição vazio ou inválido
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                error: "Corpo da requisição vazio ou inválido"
+      500:
+        description: Erro interno do servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                error: "Erro interno do servidor"
+    """
     data = request.get_json()
     try:
         if not validate_type(type):

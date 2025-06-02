@@ -14,6 +14,75 @@ get_updates_pdf_bp = Blueprint('getupdatespdf', __name__)
 @get_updates_pdf_bp.route('/get-updates-pdf', methods=['POST'])
 def generate_updates_pdf():
 
+    """
+    Gera um arquivo PDF contendo dados de atualizações
+    ---
+    tags:
+      - Atualizações
+    summary: Gera um arquivo PDF a partir de dados de atualizações
+    description: Recebe um payload JSON com dados de atualizações, valida os dados e retorna um arquivo PDF com os dados processados.
+    consumes:
+      - application/json
+    produces:
+      - application/pdf
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - name
+              - status
+            properties:
+              code:
+                type: string
+                description: O código da atualização
+                example: "UPD123"
+              name:
+                type: string
+                description: O nome associado à atualização
+                example: "Atualização Sistema"
+              status:
+                type: string
+                description: O status da atualização
+                example: "Concluído"
+    responses:
+      200:
+        description: Arquivo PDF gerado com sucesso
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      400:
+        description: Payload inválido ou validação falhou
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                erro:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                erro: "Validação falhou para os dados fornecidos."
+      500:
+        description: Erro interno do servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                erro:
+                  type: string
+                  description: Mensagem de erro
+              example:
+                erro: "Erro interno do servidor"
+    """
     dados = request.get_json()
     
     if not dados:

@@ -7,6 +7,97 @@ get_updates_bp = Blueprint('getupdates', __name__)
 
 @get_updates_bp.route('/get-updates', methods=['GET'])
 def get_updates():
+
+    """
+    Obtém dados de atualizações de um arquivo Excel
+    ---
+    tags:
+      - Atualizações
+    summary: Recupera dados de atualizações processados de um arquivo Excel
+    description: Lê um arquivo Excel chamado 'atualizacoes.xlsx' localizado no diretório 'assets/sheets', processa os dados e retorna um JSON com os dados extraídos. Retorna erros caso o arquivo não exista, esteja vazio ou ocorra um problema durante o processamento.
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Dados carregados com sucesso
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  description: Indica se a operação foi bem-sucedida
+                  example: true
+                data:
+                  type: array
+                  description: Lista de dados processados do arquivo Excel
+                  items:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Código da atualização
+                        example: "UPD123"
+                      name:
+                        type: string
+                        description: Nome associado à atualização
+                        example: "Atualização Sistema"
+                      status:
+                        type: string
+                        description: Status da atualização
+                        example: "Concluído"
+                message:
+                  type: string
+                  description: Mensagem de sucesso
+                  example: "Dados carregados com sucesso"
+      404:
+        description: Arquivo não encontrado ou sem dados válidos
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  description: Indica se a operação foi bem-sucedida
+                  example: false
+                error:
+                  type: string
+                  description: Mensagem de erro
+                  example: "Arquivo não encontrado"
+                details:
+                  type: string
+                  description: Detalhes adicionais sobre o erro
+                  example: "Você precisa processar os arquivos primeiro"
+                errorType:
+                  type: string
+                  description: Tipo de erro
+                  example: "FILE_NOT_FOUND"
+      500:
+        description: Erro interno do servidor ou falha na conversão de dados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  description: Indica se a operação foi bem-sucedida
+                  example: false
+                error:
+                  type: string
+                  description: Mensagem de erro
+                  example: "Erro interno do servidor"
+                details:
+                  type: string
+                  description: Detalhes adicionais sobre o erro
+                  example: "Mensagem de erro específica"
+                errorType:
+                  type: string
+                  description: Tipo de erro
+                  example: "SERVER_ERROR"
+    """
     try:
         assets_path = Path(__file__).parent.parent.parent / 'assets'
         sheets_path = assets_path / 'sheets'

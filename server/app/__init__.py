@@ -1,5 +1,6 @@
+from re import S
 from flask import Flask
-from flask_mail import Mail
+from flasgger import Swagger
 from app.routes.upload_file import upload_file_bp
 from app.routes.update_routes.get_updates import get_updates_bp
 from app.routes.process_files import process_files_bp   
@@ -17,7 +18,8 @@ import os
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__)   
+    swagger = Swagger(app)
     CORS(app)
    
     app.config.from_object(DevConfig)

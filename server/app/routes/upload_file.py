@@ -7,6 +7,79 @@ upload_file_bp = Blueprint('uploadfile', __name__)
 
 @upload_file_bp.route('/upload-file', methods=['POST'])
 def upload_file():
+    """
+    Faz o upload de um ou mais arquivos CSV para o servidor.
+
+    ---
+    tags:
+      - Arquivos
+    summary: Upload de arquivos CSV
+    description: >
+      Permite o envio de um ou mais arquivos com extensão `.csv`. Os arquivos serão armazenados em um diretório interno da aplicação.
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: files
+        in: formData
+        type: file
+        required: true
+        description: Um ou mais arquivos CSV a serem enviados.
+        collectionFormat: multi
+    responses:
+      200:
+        description: Arquivos enviados com sucesso.
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: Arquivos enviados com sucesso
+            data:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                  example: ["exemplo1.csv", "exemplo2.csv"]
+      400:
+        description: Requisição inválida ou arquivos incorretos.
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: false
+            error:
+              type: string
+              example: Nenhum arquivo enviado
+            details:
+              type: string
+              example: O campo 'files' é obrigatório
+            errorType:
+              type: string
+              example: NO_FILE
+      500:
+        description: Erro interno no servidor ao processar o upload.
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: false
+            error:
+              type: string
+              example: Erro no upload de arquivo
+            details:
+              type: string
+              example: Traceback do erro ou descrição detalhada
+            errorType:
+              type: string
+              example: SERVER_ERROR
+    """
     try:
         if 'files' not in request.files:
             return jsonify({
