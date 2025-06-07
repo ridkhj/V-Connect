@@ -1,26 +1,26 @@
-import path from 'path'
-import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
-export default defineConfig({
+const host = "localhost";
+
+export default defineConfig(async () => ({
   plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src/ui"),
+  clearScreen: false,
+
+  server: {
+    port: 1420,
+    strictPort: true,
+    host: host || false,
+    hmr: host
+      ? {
+          protocol: "ws",
+          host,
+          port: 1421,
+        }
+      : undefined,
+    watch: {
+      ignored: ["**/src-tauri/**"],
     },
   },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/ui/setup-tests.ts',
-  },
-  base: './',
-  build: {
-    outDir: "dist-react"
-  },
-  server: {
-    port: 5132,
-    strictPort: true
-  }
-})
+}));

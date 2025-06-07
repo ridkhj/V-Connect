@@ -10,12 +10,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/ui/*"
+        "src/*"
       ]
     },
 
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
@@ -23,13 +21,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
-    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "resolveJsonModule": true,
+
+    "strict": true,
   },
   "include": ["src"],
-  "exclude": ["src/electron"]
 }

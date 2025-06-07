@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"
 import { ArrowLeft, Search, Download, Loader2, AlertCircle } from "lucide-react"
-import Sidebar from "@/components/sidebar"
+import Sidebar from "../components/sidebar"
 import { 
   Table, 
   TableBody, 
@@ -9,8 +9,8 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from "@/components/ui/table"
-import { api } from "@/services/api";
+} from "../components/ui/table"
+import { api } from "../services/api";
 
 interface CDPR {
   code: string;
