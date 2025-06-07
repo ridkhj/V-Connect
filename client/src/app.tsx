@@ -1,5 +1,5 @@
-import Sidebar from "@/components/sidebar"
-import Options from "@/components/options"
+import Sidebar from "./components/sidebar"
+import Options from "./components/options"
 
 export default function App() {
   return (

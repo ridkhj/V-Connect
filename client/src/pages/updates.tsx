@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"
-import { ArrowLeft, Search, Download, Loader2, AlertCircle } from "lucide-react"
-import Sidebar from "@/components/sidebar"
+import { ArrowLeft, Search, Download, Loader2, AlertCircle, Copy } from "lucide-react"
+import Sidebar from "../components/sidebar"
 import { 
   Table, 
   TableBody, 
@@ -9,14 +9,12 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from "@/components/ui/table"
-import { api } from "@/services/api";
+} from "../components/ui/table"
+import { api } from "../services/api";
 
-interface Letter {
+interface Update {
   code: string;
   name: string;
-  type: 'reciprocas' | 'nsl' | 'agradecimento';
-  date: string;
   status: string;
 }
 
@@ -24,12 +22,12 @@ interface ErrorResponse {
   success: false;
   error: string;
   details: string;
-  errorType: 'FILE_NOT_FOUND' | 'NO_DATA' | 'VALIDATION_ERROR' | 'SERVER_ERROR';
+  errorType: 'FILE_NOT_FOUND' | 'NO_DATA' | 'VALIDATION_ERROR' | 'SERVER_ERROR' | 'PROCESSING_ERROR';
 }
 
 interface SuccessResponse {
   success: true;
-  data: Letter[];
+  data: Update[];
   message: string;
 }
 
@@ -41,20 +39,19 @@ interface ApiError {
   };
 }
 
-export default function Letters() {
-  const [letters, setLetters] = useState<Letter[]>([]);
-  const [filteredLetters, setFilteredLetters] = useState<Letter[]>([]);
+export default function Updates() {
+  const [updates, setUpdates] = useState<Update[]>([]);
+  const [filteredUpdates, setFilteredUpdates] =  useState<Update[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{message: string, type: string} | null>(null);
-  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
+  const [selectedUpdates, setSelectedUpdates] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [selectedType, setSelectedType] = useState<Letter['type']>('reciprocas');
 
   const processUploadedFiles = async () => {
     try {
       await api.post('/process-files');
-      await fetchLetters();
+      await fetchUpdates();
     } catch (error) {
       console.error('Erro ao processar arquivos:', error);
       setError({
@@ -64,11 +61,11 @@ export default function Letters() {
     }
   };
 
-  const fetchLetters = async () => {
+  const fetchUpdates = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get<ApiResponse>(`/get-letters/${selectedType}`);
+      const response = await api.get<ApiResponse>('/get-updates');
       const data = response.data;
 
       if (!data.success) {
@@ -81,15 +78,15 @@ export default function Letters() {
           message: `${data.error}: ${data.details}`,
           type: data.errorType
         });
-        setLetters([]);
-        setFilteredLetters([]);
+        setUpdates([]);
+        setFilteredUpdates([]);
         return;
       }
 
-      setLetters(data.data) ;
-      setFilteredLetters(data.data);
+      setUpdates(data.data);
+      setFilteredUpdates(data.data);
     } catch (error: unknown) {
-      let errorMessage = 'Erro ao carregar as cartas';
+      let errorMessage = 'Erro ao carregar as atualizações';
       let errorType = 'SERVER_ERROR';
 
       const apiError = error as ApiError;
@@ -99,52 +96,50 @@ export default function Letters() {
       }
 
       setError({ message: errorMessage, type: errorType });
-      setLetters([]);
-      setFilteredLetters([]);
+      setUpdates([]);
+      setFilteredUpdates([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchLetters();
-  }, [selectedType]);
+    fetchUpdates();
+  }, []);
 
   useEffect(() => {
-    const filtered = letters.filter(letter => 
-      letter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      letter.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      letter.status.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered = updates.filter(update => 
+      update.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      update.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      update.status.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setFilteredLetters(filtered);
-  }, [searchTerm, letters]);
+    setFilteredUpdates(filtered);
+  }, [searchTerm, updates]);
 
   const handlePrintReport = async () => {
-    if (selectedLetters.length === 0) {
-      alert('Selecione pelo menos uma carta para imprimir');
+    if (selectedUpdates.length === 0) {
+      alert('Selecione pelo menos uma atualização para imprimir');
       return;
     }
 
     setIsGeneratingPDF(true);
     try {
-      const selectedData = letters
-        .filter(letter => selectedLetters.includes(letter.code))
-        .map(letter => ({
-          code: letter.code,
-          name: letter.name,
-          type: letter.type,
-          date: letter.date,
-          status: letter.status
+      const selectedData = updates
+        .filter(update => selectedUpdates.includes(update.code))
+        .map(update => ({
+          code: update.code,
+          name: update.name,
+          status: update.status
         }));
 
-      const response = await api.post(`/get-letters-pdf/${selectedType}`, selectedData, {
+      const response = await api.post('/get-updates-pdf', selectedData, {
         responseType: 'blob'
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `cartas-${selectedType}.pdf`);
+      link.setAttribute('download', 'atualizacoes.pdf');
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -157,8 +152,10 @@ export default function Letters() {
     }
   };
 
-  const handleSelectLetter = (code: string) => {
-    setSelectedLetters(prev => 
+  const handleCopyToClipboard = () => {}
+
+  const handleSelectUpdate = (code: string) => {
+    setSelectedUpdates(prev => 
       prev.includes(code) 
         ? prev.filter(c => c !== code)
         : [...prev, code]
@@ -166,31 +163,22 @@ export default function Letters() {
   };
 
   const handleSelectAll = () => {
-    if (selectedLetters.length === filteredLetters.length) {
-      setSelectedLetters([]);
+    if (selectedUpdates.length === filteredUpdates.length) {
+      setSelectedUpdates([]);
     } else {
-      setSelectedLetters(filteredLetters.map(letter => letter.code));
+      setSelectedUpdates(filteredUpdates.map(update => update.code));
     }
   };
 
   const getStatusColor = (status: string) => {
     const statusColors: Record<string, { bg: string; text: string }> = {
       'Pendente': { bg: 'bg-yellow-50', text: 'text-yellow-700' },
-      'Enviado': { bg: 'bg-green-50', text: 'text-green-700' },
-      'Em Processamento': { bg: 'bg-blue-50', text: 'text-blue-700' },
+      'Concluído': { bg: 'bg-green-50', text: 'text-green-700' },
+      'Em Andamento': { bg: 'bg-blue-50', text: 'text-blue-700' },
       'Cancelado': { bg: 'bg-red-50', text: 'text-red-700' }
     };
 
     return statusColors[status] || { bg: 'bg-gray-50', text: 'text-gray-700' };
-  };
-
-  const getTypeLabel = (type: Letter['type']) => {
-    const types = {
-      'reciprocas': 'Recíprocas',
-      'nsl': 'NSL',
-      'agradecimento': 'Agradecimento'
-    };
-    return types[type];
   };
 
   const renderError = () => {
@@ -198,7 +186,8 @@ export default function Letters() {
       FILE_NOT_FOUND: 'text-yellow-600 bg-yellow-50 border-yellow-200',
       NO_DATA: 'text-orange-600 bg-orange-50 border-orange-200',
       VALIDATION_ERROR: 'text-red-600 bg-red-50 border-red-200',
-      SERVER_ERROR: 'text-red-600 bg-red-50 border-red-200'
+      SERVER_ERROR: 'text-red-600 bg-red-50 border-red-200',
+      PROCESSING_ERROR: 'text-red-600 bg-red-50 border-red-200'
     };
 
     const color = errorColors[error?.type as keyof typeof errorColors] || errorColors.SERVER_ERROR;
@@ -223,32 +212,16 @@ export default function Letters() {
             <Link to="/" className="hover:bg-gray-100 p-2 rounded-full transition-colors">
               <ArrowLeft size={24} className="text-black" />
             </Link>
-            <h1 className="text-xl font-bold text-gray-800">Relatório de Cartas</h1>
+            <h1 className="text-xl font-bold text-gray-800">Relatório de Atualizações</h1>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">
-              {selectedLetters.length} de {filteredLetters.length} selecionados
+              {selectedUpdates.length} de {filteredUpdates.length} selecionados
             </span>
           </div>
         </header>
 
         <div className="p-6">
-          <div className="flex gap-2 mb-6">
-            {(['reciprocas', 'nsl', 'agradecimento'] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                  selectedType === type
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                }`}
-              >
-                {getTypeLabel(type)}
-              </button>
-            ))}
-          </div>
-
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4 flex-1 max-w-md">
               <div className="relative flex-1">
@@ -265,8 +238,16 @@ export default function Letters() {
             
             <div className="flex items-center gap-3">
               <button
+                onClick={handleCopyToClipboard}
+                disabled={selectedUpdates.length === 0}
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Copy size={18} />
+                Copiar
+              </button>
+              <button
                 onClick={handlePrintReport}
-                disabled={selectedLetters.length === 0 || isGeneratingPDF}
+                disabled={selectedUpdates.length === 0 || isGeneratingPDF}
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isGeneratingPDF ? (
@@ -295,7 +276,7 @@ export default function Letters() {
                     <TableHead className="w-[50px] text-center">
                       <input 
                         type="checkbox"
-                        checked={selectedLetters.length === filteredLetters.length && filteredLetters.length > 0}
+                        checked={selectedUpdates.length === filteredUpdates.length && filteredUpdates.length > 0}
                         onChange={handleSelectAll}
                         className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
@@ -306,14 +287,14 @@ export default function Letters() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredLetters.length === 0 ? (
+                  {filteredUpdates.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={4} className="text-center py-8 text-gray-500">
                         Nenhum registro encontrado
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredLetters.map((letter, index) => (
+                    filteredUpdates.map((update, index) => (
                       <TableRow 
                         key={index}
                         className="hover:bg-gray-50 transition-colors"
@@ -321,18 +302,18 @@ export default function Letters() {
                         <TableCell className="text-center">
                           <input 
                             type="checkbox"
-                            checked={selectedLetters.includes(letter.code)}
-                            onChange={() => handleSelectLetter(letter.code)}
+                            checked={selectedUpdates.includes(update.code)}
+                            onChange={() => handleSelectUpdate(update.code)}
                             className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                           />
                         </TableCell>
-                        <TableCell className="font-medium text-gray-900">{letter.code}</TableCell>
-                        <TableCell className="text-gray-700">{letter.name}</TableCell>
+                        <TableCell className="font-medium text-gray-900">{update.code}</TableCell>
+                        <TableCell className="text-gray-700">{update.name}</TableCell>
                         <TableCell>
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            getStatusColor(letter.status).bg
-                          } ${getStatusColor(letter.status).text}`}>
-                            {letter.status}
+                            getStatusColor(update.status).bg
+                          } ${getStatusColor(update.status).text}`}>
+                            {update.status}
                           </span>
                         </TableCell>
                       </TableRow>

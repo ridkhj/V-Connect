@@ -1,4 +1,4 @@
-import FileUploader from "@/components/file-uploader"
+import FileUploader from "./file-uploader"
 
 export default function Sidebar() {
   return (

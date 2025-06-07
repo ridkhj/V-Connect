@@ -1,11 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { CheckCircle2, FileIcon, Upload } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Progress } from '@/components/ui/progress'
-import { Card, CardContent } from '@/components/ui/card'
-import formatTimeAgo from '@/utils/format-time-ago'
-import formatFileSize from '@/utils/format-file-size'
-import { api } from '@/services/api'
+import { cn } from '../lib/utils'
+import { Progress } from './ui/progress'
+import { Card, CardContent } from './ui/card'
+import formatTimeAgo from '../utils/format-time-ago'
+import formatFileSize from '../utils/format-file-size'
+import { api } from '../services/api'
 
 interface UploadedFile {
   id: string;

@@ -9,14 +9,11 @@ lerna-debug.log*
 
 node_modules
 dist
-dist-react
-dist-electron
 dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode
 .idea
 .DS_Store
 *.suo
@@ -24,3 +21,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# Rust (backend do Tauri)
+/src-tauri/target/
+/src-tauri/Cargo.lock   # (opcional: ignore se for lib, versiona se for app)
+/src-tauri/.cargo/
+
+# Build do Tauri
+/src-tauri/bundler/**/*
