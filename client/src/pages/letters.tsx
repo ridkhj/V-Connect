@@ -49,6 +49,7 @@ export default function Letters() {
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isMarkingAsSent, setIsMarkingAsSent] = useState(false);
   const [selectedType, setSelectedType] = useState<Letter['type']>('reciprocas');
 
   const processUploadedFiles = async () => {
@@ -173,6 +174,28 @@ export default function Letters() {
     }
   };
 
+  const handleMarkAsSent = async () => {
+    if (selectedLetters.length === 0) {
+      alert('Selecione pelo menos uma pendencia para marcar como enviado');
+      return;
+    }
+
+    setIsMarkingAsSent(true);
+    try {
+      await api.post(`/mark-letters-sent/${selectedType}`, {
+        codes: selectedLetters
+      });
+
+      setSelectedLetters([]);
+      await fetchLetters();
+    } catch (error) {
+      console.error('Erro ao marcar cartas como enviado:', error);
+      alert('Erro ao atualizar o status das pendencias');
+    } finally {
+      setIsMarkingAsSent(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     const statusColors: Record<string, { bg: string; text: string }> = {
       'Pendente': { bg: 'bg-yellow-50', text: 'text-yellow-700' },
@@ -264,6 +287,16 @@ export default function Letters() {
             </div>
             
             <div className="flex items-center gap-3">
+              <button
+                onClick={handleMarkAsSent}
+                disabled={selectedLetters.length === 0 || isMarkingAsSent}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isMarkingAsSent ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : null}
+                Marcar como enviado
+              </button>
               <button
                 onClick={handlePrintReport}
                 disabled={selectedLetters.length === 0 || isGeneratingPDF}

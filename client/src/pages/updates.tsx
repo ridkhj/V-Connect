@@ -47,6 +47,7 @@ export default function Updates() {
   const [selectedUpdates, setSelectedUpdates] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isMarkingAsSent, setIsMarkingAsSent] = useState(false);
 
   const processUploadedFiles = async () => {
     try {
@@ -154,6 +155,28 @@ export default function Updates() {
 
   const handleCopyToClipboard = () => {}
 
+  const handleMarkAsSent = async () => {
+    if (selectedUpdates.length === 0) {
+      alert('Selecione pelo menos uma pendencia para marcar como enviado');
+      return;
+    }
+
+    setIsMarkingAsSent(true);
+    try {
+      await api.post('/mark-updates-sent', {
+        codes: selectedUpdates
+      });
+
+      setSelectedUpdates([]);
+      await fetchUpdates();
+    } catch (error) {
+      console.error('Erro ao marcar como enviado:', error);
+      alert('Erro ao atualizar o status das pendencias');
+    } finally {
+      setIsMarkingAsSent(false);
+    }
+  };
+
   const handleSelectUpdate = (code: string) => {
     setSelectedUpdates(prev => 
       prev.includes(code) 
@@ -237,6 +260,16 @@ export default function Updates() {
             </div>
             
             <div className="flex items-center gap-3">
+              <button
+                onClick={handleMarkAsSent}
+                disabled={selectedUpdates.length === 0 || isMarkingAsSent}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isMarkingAsSent ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : null}
+                Marcar como enviado
+              </button>
               <button
                 onClick={handleCopyToClipboard}
                 disabled={selectedUpdates.length === 0}

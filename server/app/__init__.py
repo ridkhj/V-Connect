@@ -8,8 +8,10 @@ from app.routes.letter_routes.get_letters import get_letters_bp
 from app.routes.letter_routes.get_letters_pdf import get_letters_pdf_bp
 from app.routes.cdpr_routes.get_cdpr import get_cdpr_bp
 from app.routes.update_routes.get_updates_pdf  import get_updates_pdf_bp
+from app.routes.update_routes.mark_updates_sent import mark_updates_sent_bp
 from app.routes.cdpr_routes.get_cdpr_pdf import get_cdpr_pdf_bp
 from app.routes.get_files import get_files_bp
+from app.routes.letter_routes.mark_letters_sent import mark_letters_sent_bp
 from app.config import DevConfig, Config
 from dotenv import load_dotenv
 from flask_cors import CORS
@@ -35,9 +37,11 @@ def create_app():
 
     app.register_blueprint(get_updates_bp)
     app.register_blueprint(get_updates_pdf_bp)
+    app.register_blueprint(mark_updates_sent_bp)
     
     app.register_blueprint(get_cdpr_bp)
     app.register_blueprint(get_cdpr_pdf_bp)
+    app.register_blueprint(mark_letters_sent_bp)
 
     app.register_blueprint(get_files_bp)
 
